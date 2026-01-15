@@ -28,7 +28,7 @@ Một ứng dụng Desktop GUI mạnh mẽ được xây dựng bằng Python (T
 
 2.  **Tạo môi trường Conda (Khuyên dùng):**
     ```bash
-    conda create -n Map python=3.9
+    conda create -n Map python=3.10
     conda activate Map
     ```
 
