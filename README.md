@@ -67,6 +67,8 @@ Một ứng dụng Desktop GUI mạnh mẽ được xây dựng bằng Python (T
 
 Do kích thước file weights (`.pt`) thường lớn, chúng không được upload trực tiếp lên GitHub này. Vui lòng tải weights và đặt vào thư mục `weight_data/` theo cấu trúc được định nghĩa trong `gui_config.py`.
 
+Không có thể tải về những weight có sẵn: [weight_data](https://drive.google.com/drive/folders/1Xo9MOrquM-1DjhHSwdEEOqw-q1Iee1i7)
+
 ## 🤝 Đóng góp
 
 Mọi đóng góp (Pull Request) hoặc báo lỗi (Issue) đều được hoan nghênh.
