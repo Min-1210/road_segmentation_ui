@@ -1,0 +1,18 @@
+# Bỏ qua thư mục chứa weights (quan trọng!)
+weight_data/
+*.pt
+*.pth
+
+# Bỏ qua các file sinh ra bởi Python
+__pycache__/
+*.pyc
+
+# Bỏ qua thư mục output dự đoán
+predictions/
+depth_image_txt/
+
+# Bỏ qua file cấu hình môi trường ảo
+.idea/
+.vscode/
+env/
+venv/
