@@ -1,4 +1,4 @@
-# Road Segmentation GUI Tool 🛣️
+# Road Segmentation GUI Tool
 
 Một ứng dụng Desktop GUI mạnh mẽ được xây dựng bằng Python (Tkinter) để thực hiện phân đoạn đường (Road Segmentation) từ ảnh vệ tinh. Công cụ này tích hợp nhiều kiến trúc Deep Learning tiên tiến và cho phép tinh chỉnh hình ảnh đầu vào theo thời gian thực.
 
@@ -40,10 +40,9 @@ Một ứng dụng Desktop GUI mạnh mẽ được xây dựng bằng Python (T
 ## 🚀 Hướng dẫn sử dụng
 
 ### Chạy ứng dụng
-* **Windows:** Click đúp vào file `run.bat`.
 * **Linux/Mac:** Chạy file `run.sh` hoặc lệnh:
     ```bash
-    python gui_1.py
+    python UI_segmentation.py
     ```
 
 ### Các bước thực hiện trên GUI:
@@ -58,7 +57,7 @@ Một ứng dụng Desktop GUI mạnh mẽ được xây dựng bằng Python (T
 
 ## 📂 Cấu trúc thư mục
 
-* `gui_1.py`: File chính khởi chạy giao diện người dùng.
+* `UI_segmentation`: File chính khởi chạy giao diện người dùng.
 * `inference.py`: Core xử lý logic, load model và dự đoán.
 * `gui_config.py`: Quản lý đường dẫn và cấu hình các model.
 * `weight_data/`: Thư mục chứa các file weights (Lưu ý: Bạn cần tự tải weights về đúng cấu trúc).
