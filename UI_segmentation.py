@@ -321,17 +321,19 @@ class CombinedApp(tk.Tk):
         ttk.Label(gb, text="Blur:").pack(anchor="w")
         row_blur = ttk.Frame(gb)
         row_blur.pack(fill=tk.X)
-        tk.Scale(row_blur, from_=0, to=10, orient=tk.HORIZONTAL, variable=self.blur_val, bg="#f0f0f0", highlightthickness=0).pack(side=tk.LEFT, expand=True, fill=tk.X)
+        
+        tk.Scale(row_blur, from_=0, to=10, orient=tk.HORIZONTAL, variable=self.blur_val, bg="#f0f0f0", highlightthickness=0, command=self._debounced_preview).pack(side=tk.LEFT, expand=True, fill=tk.X)
         ttk.Entry(row_blur, textvariable=self.blur_val, width=5).pack(side=tk.RIGHT, padx=5)
 
         ttk.Label(gb, text="Brightness (Alpha %):").pack(anchor="w", pady=(5, 0))
         row_alpha = ttk.Frame(gb)
         row_alpha.pack(fill=tk.X)
-        tk.Scale(row_alpha, from_=0, to=200, orient=tk.HORIZONTAL, variable=self.alpha_val, bg="#f0f0f0", highlightthickness=0).pack(side=tk.LEFT, expand=True, fill=tk.X)
+        
+        tk.Scale(row_alpha, from_=0, to=200, orient=tk.HORIZONTAL, variable=self.alpha_val, bg="#f0f0f0", highlightthickness=0, command=self._debounced_preview).pack(side=tk.LEFT, expand=True, fill=tk.X)
         ttk.Entry(row_alpha, textvariable=self.alpha_val, width=5).pack(side=tk.RIGHT, padx=5)
 
-        ttk.Checkbutton(gb, text="Add Gaussian Noise", variable=self.noise_var).pack(anchor="w", pady=(5, 0))
-        ttk.Button(gb, text="Apply & Preview", command=self.on_preview_noise).pack(fill=tk.X, pady=5)
+        ttk.Checkbutton(gb, text="Add Gaussian Noise", variable=self.noise_var, command=self._debounced_preview).pack(anchor="w", pady=(5, 0))
+        ttk.Button(gb, text="Reset Image Processing", command=self.on_reset_filters).pack(fill=tk.X, pady=5)
 
     def _build_model_group(self, parent):
         gb = ttk.LabelFrame(parent, text="3. Model Configuration")
@@ -421,9 +423,15 @@ class CombinedApp(tk.Tk):
         self.cb_encoder.bind("<<ComboboxSelected>>", self._on_encoder_changed)
         self.cb_dataset.bind("<<ComboboxSelected>>", self._auto_select_weight)
         self.lb_images.bind("<<ListboxSelect>>", self.on_select_listbox)
-        
-        self.blur_val.trace_add("write", lambda *args: self.on_preview_noise())
-        self.alpha_val.trace_add("write", lambda *args: self.on_preview_noise())
+            
+    def _debounced_preview(self, *args):
+        if not hasattr(self, '_preview_timer'):
+            self._preview_timer = None
+            
+        if self._preview_timer is not None:
+            self.after_cancel(self._preview_timer)
+            
+        self._preview_timer = self.after(150, self.on_preview_noise)
 
     def _on_arch_changed(self, event):
         arch = self.arch.get()
@@ -600,9 +608,11 @@ class CombinedApp(tk.Tk):
         except: pass
 
         if self.noise_var.get():
-            sigma = 0.5**0.5
-            gauss = np.random.normal(0, sigma, out.shape) * 50
-            out = np.clip(out.astype(np.float32) + gauss, 0, 255).astype(np.uint8)
+            mean = 0
+            std_dev = 25
+            gaussian_noise = np.random.normal(mean, std_dev, out.shape).astype(np.int16)
+            noisy_image = out.astype(np.int16) + gaussian_noise
+            out = np.clip(noisy_image, 0, 255).astype(np.uint8)
         
         return out
 
@@ -772,6 +782,12 @@ class CombinedApp(tk.Tk):
                 messagebox.showinfo("Success", "Image saved successfully!")
             except Exception as e:
                 messagebox.showerror("Error", f"Could not save file: {e}")
+
+    def on_reset_filters(self):
+        self.blur_val.set(0)
+        self.alpha_val.set(100)
+        self.noise_var.set(False)
+        self._debounced_preview()
 
     def on_reset(self):
         self.lb_images.delete(0, tk.END)
